@@ -3,6 +3,7 @@
 # custom static files
 /img
 /resize
+test.js
 
 # compiled output
 /dist
