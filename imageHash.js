@@ -54,6 +54,12 @@ const hamming_distance = async (firstImg, secondImg, hashMethod) => {
       calculate_distance(hash1, hash2);
       break;
     }
+    case HashMethod.MHASH: {
+      const hash1 = await MHash(firstImg);
+      const hash2 = await MHash(secondImg);
+      calculate_distance(hash1, hash2);
+      break;
+    }
     default:
       console.log(`Sorry, we are out of ${expr}.`);
   }
@@ -117,6 +123,44 @@ const AHash = async (imgPath) => {
   }
   hexadecimal = parseInt(difference, 2).toString(16);
   console.log(average, hexadecimal);
+  return hexadecimal;
+};
+
+/**
+ * Median Hash
+ * From each row, the pixels are examined from left to right,
+ * if current pixel value > median value, add 1 to hash string, else add 0
+ * 获取图片的中位哈希值
+ * 从每一行开始，从左到右检查像素，如果当前像素值 > 中位哈希值，哈希字串加 1，否则加 0
+ *
+ * @param {string} imgPath
+ * @returns
+ */
+const MHash = async (imgPath) => {
+  let arr = await convertGrayscale(imgPath);
+  let vauleArr = [];
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr[0].length; j++) {
+      vauleArr.push(arr[i][j]);
+    }
+  }
+  const arrSort = vauleArr.sort();
+  const len = arrSort.length;
+  const mid = Math.ceil(len / 2);
+  const median =
+    len % 2 == 0 ? (arrSort[mid] + arrSort[mid - 1]) / 2 : arrSort[mid - 1];
+  let difference = "";
+  for (let i = 0; i < arr.length; i++) {
+    for (let j = 0; j < arr[0].length; j++) {
+      if (arr[i][j] > median) {
+        difference += "1";
+      } else {
+        difference += "0";
+      }
+    }
+  }
+  hexadecimal = parseInt(difference, 2).toString(16);
+  console.log(median, hexadecimal);
   return hexadecimal;
 };
 
@@ -193,10 +237,8 @@ const convertGrayscale = async (imgPath) => {
 );
  */
 
-AHash("/Users/chiya/Documents/Work_Git/image-hash-js/img/0001_2.jpg");
-
 hamming_distance(
   "/Users/chiya/Documents/Work_Git/image-hash-js/img/724.jpg",
-  "/Users/chiya/Documents/Work_Git/image-hash-js/img/resize.jpg",
+  "/Users/chiya/Documents/Work_Git/image-hash-js/img/285.jpg",
   HashMethod.DHASH
 );
