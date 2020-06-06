@@ -11,6 +11,7 @@ class HashMethod {
 HashMethod.DHASH = new HashMethod("dhash");
 HashMethod.AHASH = new HashMethod("ahash");
 HashMethod.MHASH = new HashMethod("mhash");
+HashMethod.BHASH = new HashMethod("bhash");
 
 // Freeze objects to prevent modification
 // 冻结对象，防止修改

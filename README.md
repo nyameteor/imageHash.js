@@ -3,8 +3,10 @@
 picture similarity comparison implemented by javascript
 Implemented algorithms:
 
+- Block Hash
 - Difference Hash
 - Average Hash
+- Median Hash
 
 References: https://content-blockchain.org/research/testing-different-image-hash-functions/
 
