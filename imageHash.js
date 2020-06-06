@@ -165,6 +165,18 @@ const MHash = async (imgPath) => {
   return hexadecimal;
 };
 
+/**
+ * Block Hash
+ * The block hash algorithm divides the image into blocks,
+ * and generates a value for each block, either 1 or 0.
+ * These values are combined serially from left to right into a hash.
+ * 块哈希算法将图像划分为多个块 ，并为每个 block 生成一个值 1 或 0，
+ * 这些值从左到右依次组合成一个哈希。
+ *
+ * @param {string} imgPath
+ * @param {number} bits
+ * @returns {string}
+ */
 const BHash = async (imgPath, bits) => {
   let pixels = await retrivePixels(imgPath);
   const width = pixels.shape[0];
@@ -193,6 +205,16 @@ const BHash = async (imgPath, bits) => {
   return bitsToHexHash(blocksArr);
 };
 
+/**
+ * get total value of rgb
+ * 返回当前像素的 rgb 值之和
+ * todo: 考虑是否加权
+ *
+ * @param {object} pixels
+ * @param {number} x
+ * @param {number} y
+ * @returns {number}
+ */
 const totalValueRGB = (pixels, x, y) => {
   const r = pixels.get(x, y, 0);
   const g = pixels.get(x, y, 1);
@@ -200,6 +222,13 @@ const totalValueRGB = (pixels, x, y) => {
   return r + g + b;
 };
 
+/**
+ * get median value from 2d array
+ * 从二维数组中获取中位数
+ *
+ * @param {object} pixels
+ * @returns {number}
+ */
 const getMedian = (pixels) => {
   // 2d array convert to 1d
   arr = [].concat(...pixels);
@@ -210,6 +239,14 @@ const getMedian = (pixels) => {
   return median;
 };
 
+/**
+ * get blocks with bits wirte
+ * 获取 blocks 的 bits 值
+ *
+ * @param {object} blocks
+ * @param {int} pixlesPerBlock
+ * @returns {object}
+ */
 const blocksToBits = (blocks, pixlesPerBlock) => {
   halfBlockValue = (pixlesPerBlock * 256 * 3) / 2;
 
@@ -222,6 +259,8 @@ const blocksToBits = (blocks, pixlesPerBlock) => {
       // Output a 1 if the block is brighter than the median.
       // To avoid generating hashes of all zeros or ones,
       // in that case output 0 if the median is in the lower value space, 1 otherwise
+      // 如果 block > 中位数, 则输出 1
+      // 为了避免生成全零或零占据大部分的哈希值, 若中位数在较低值空间中，则输出0，否则输出1
       if (v > m || (Math.abs(v - m) < 1 && m > halfBlockValue)) {
         blocks[j] = 1;
       } else {
@@ -232,6 +271,13 @@ const blocksToBits = (blocks, pixlesPerBlock) => {
   return blocks;
 };
 
+/**
+ * convert blocks with bits to hexadecimal hash string
+ * 将具有位值的块转换为十六进制哈希字符串
+ *
+ * @param {object} bits
+ * @returns {string}
+ */
 const bitsToHexHash = (bits) => {
   bitsStr = "";
   for (let i = 0; i < bits.length; i++) {
