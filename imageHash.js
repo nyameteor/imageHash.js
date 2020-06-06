@@ -61,8 +61,8 @@ const hamming_distance = async (firstImg, secondImg, hashMethod) => {
       break;
     }
     case HashMethod.BHASH: {
-      const hash1 = await BHash(firstImg, 8);
-      const hash2 = await BHash(secondImg, 8);
+      const hash1 = await BHash(firstImg);
+      const hash2 = await BHash(secondImg);
       calculate_distance(hash1, hash2);
       break;
     }
@@ -94,6 +94,7 @@ const DHash = async (imgPath) => {
     }
   }
   hexadecimal = parseInt(difference, 2).toString(16);
+  console.log(hexadecimal);
   return hexadecimal;
 };
 
@@ -169,10 +170,10 @@ const MHash = async (imgPath) => {
  * 这些值从左到右依次组合成一个哈希。
  *
  * @param {string} imgPath
- * @param {number} bits
+ * @param {number} [bits=8]
  * @returns {string}
  */
-const BHash = async (imgPath, bits) => {
+const BHash = async (imgPath, bits = 8) => {
   let pixels = await retrivePixels(imgPath);
   const width = pixels.shape[0];
   const height = pixels.shape[1];
@@ -356,9 +357,7 @@ const convertGrayscale = async (imgPath) => {
 
 exports.convertGrayscale = convertGrayscale;
 exports.hamming_distance = hamming_distance;
-
-hamming_distance(
-  "/Users/chiya/Documents/Work_Git/image-hash-js/img/724.jpg",
-  "/Users/chiya/Documents/Work_Git/image-hash-js/img/139.jpg",
-  HashMethod.BHASH
-);
+exports.BHash = BHash;
+exports.DHash = DHash;
+exports.AHash = AHash;
+exports.MHash = MHash;
