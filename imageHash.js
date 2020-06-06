@@ -65,6 +65,12 @@ const hamming_distance = async (firstImg, secondImg, hashMethod) => {
       calculate_distance(hash1, hash2);
       break;
     }
+    case HashMethod.BHASH: {
+      const hash1 = await BHash(firstImg, 8);
+      const hash2 = await BHash(secondImg, 8);
+      calculate_distance(hash1, hash2);
+      break;
+    }
     default:
       console.log(`Sorry, we are out of ${expr}.`);
   }
@@ -143,17 +149,7 @@ const AHash = async (imgPath) => {
  */
 const MHash = async (imgPath) => {
   let arr = await convertGrayscale(imgPath);
-  let vauleArr = [];
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr[0].length; j++) {
-      vauleArr.push(arr[i][j]);
-    }
-  }
-  const arrSort = vauleArr.sort();
-  const len = arrSort.length;
-  const mid = Math.ceil(len / 2);
-  const median =
-    len % 2 == 0 ? (arrSort[mid] + arrSort[mid - 1]) / 2 : arrSort[mid - 1];
+  const median = getMedian(arr);
   let difference = "";
   for (let i = 0; i < arr.length; i++) {
     for (let j = 0; j < arr[0].length; j++) {
@@ -166,6 +162,87 @@ const MHash = async (imgPath) => {
   }
   hexadecimal = parseInt(difference, 2).toString(16);
   console.log(median, hexadecimal);
+  return hexadecimal;
+};
+
+const BHash = async (imgPath, bits) => {
+  let pixels = await retrivePixels(imgPath);
+  const width = pixels.shape[0];
+  const height = pixels.shape[1];
+  blocksizeX = Math.ceil(width / bits);
+  blockSizeY = Math.ceil(height / bits);
+
+  result = [];
+
+  for (let y = 0; y < bits; y++) {
+    for (let x = 0; x < bits; x++) {
+      value = 0;
+
+      for (let iy = 0; iy < blockSizeY; iy++) {
+        for (let ix = 0; ix < blocksizeX; ix++) {
+          const cx = x * blocksizeX + ix;
+          const cy = y * blockSizeY + iy;
+          value += totalValueRGB(pixels, cx, cy);
+        }
+      }
+
+      result.push(value);
+    }
+  }
+  const blocksArr = blocksToBits(result, blockSizeY * blocksizeX);
+  return bitsToHexHash(blocksArr);
+};
+
+const totalValueRGB = (pixels, x, y) => {
+  const r = pixels.get(x, y, 0);
+  const g = pixels.get(x, y, 1);
+  const b = pixels.get(x, y, 2);
+  return r + g + b;
+};
+
+const getMedian = (pixels) => {
+  // 2d array convert to 1d
+  arr = [].concat(...pixels);
+  arr = arr.sort();
+  const len = arr.length;
+  const mid = Math.ceil(len / 2);
+  const median = len % 2 == 0 ? (arr[mid] + arr[mid - 1]) / 2 : arr[mid - 1];
+  return median;
+};
+
+const blocksToBits = (blocks, pixlesPerBlock) => {
+  halfBlockValue = (pixlesPerBlock * 256 * 3) / 2;
+
+  bandsize = Math.ceil(blocks.length / 4);
+  for (let i = 0; i < 4; i++) {
+    const m = getMedian(blocks.slice(i * bandsize, (i + 1) * bandsize));
+    for (let j = i * bandsize; j < (i + 1) * bandsize; j++) {
+      v = blocks[j];
+
+      // Output a 1 if the block is brighter than the median.
+      // To avoid generating hashes of all zeros or ones,
+      // in that case output 0 if the median is in the lower value space, 1 otherwise
+      if (v > m || (Math.abs(v - m) < 1 && m > halfBlockValue)) {
+        blocks[j] = 1;
+      } else {
+        blocks[j] = 0;
+      }
+    }
+  }
+  return blocks;
+};
+
+const bitsToHexHash = (bits) => {
+  bitsStr = "";
+  for (let i = 0; i < bits.length; i++) {
+    if (bits[i] === 1) {
+      bitsStr += "1";
+    } else {
+      bitsStr += "0";
+    }
+  }
+  hexadecimal = parseInt(bitsStr, 2).toString(16);
+  console.log(hexadecimal);
   return hexadecimal;
 };
 
