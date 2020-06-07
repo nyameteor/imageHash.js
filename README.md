@@ -8,7 +8,7 @@ picture similarity comparison implemented by javascript
 - Difference Hash
 - Average Hash
 - Median Hash
-- Color Histogram Hash
+- Color Histogram Similarity
 
 ## Usage
 

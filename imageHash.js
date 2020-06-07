@@ -284,6 +284,13 @@ const bitsToHexHash = (bits) => {
   return hexadecimal;
 };
 
+/**
+ * convert image to a 64-dimensional vector
+ * 将图像转换为 64 维向量
+ *
+ * @param {string} imgPath
+ * @returns {object}
+ */
 const colorVector = async (imgPath) => {
   let pixels = await retrivePixels(imgPath);
   const width = pixels.shape[0];
@@ -299,15 +306,21 @@ const colorVector = async (imgPath) => {
       vectors[index] += 1;
     }
   }
-  // value to frequency
-  /* for (let i = 0; i < vectors.length; i++) {
-    vectors[i] /= width * height;
-  } */
 
   console.log(vectors);
   return vectors;
 };
 
+/**
+ * Simplify the color space and divide the value of 0~255 into four areas
+ * There are 4 zones of red, green and blue,
+ * which constitute a total of 64 combinations (4 to the 3rd power)
+ * 简化色彩空间，将 0~255 的值等分为四个区
+ * 由于红绿蓝分别有4个区，共构成64种组合（4的3次方）
+ *
+ * @param {int} value
+ * @returns {int}
+ */
 const getPartition = (value) => {
   if (value >= 0 && value <= 63) {
     return 0;
@@ -320,6 +333,14 @@ const getPartition = (value) => {
   }
 };
 
+/**
+ * calculate the cosine similiarity of two images based on color histogram
+ * 基于颜色直方图计算两个图像的余弦相似度
+ *
+ * @param {string} firstImg
+ * @param {string} secondImg
+ * @returns {number}
+ */
 const colorSimiliarity = async (firstImg, secondImg) => {
   let vector1 = await colorVector(firstImg);
   let vector2 = await colorVector(secondImg);
