@@ -26,8 +26,8 @@ const resizeImage = async (imgPath, length, width) => {
  * @param {string} secondImg
  * @param {object} hashMethod
  */
-const hamming_distance = async (firstImg, secondImg, hashMethod) => {
-  const calculate_distance = (hash1, hash2) => {
+const hammingDistance = async (firstImg, secondImg, hashMethod) => {
+  const calculateDistance = (hash1, hash2) => {
     const difference =
       parseInt(hash1, 16).toString(10) ^ parseInt(hash2, 16).toString(10);
     binary = parseInt(difference, 10).toString(2);
@@ -64,7 +64,7 @@ const hamming_distance = async (firstImg, secondImg, hashMethod) => {
   }
   const hash1 = await method(firstImg);
   const hash2 = await method(secondImg);
-  calculate_distance(hash1, hash2);
+  calculateDistance(hash1, hash2);
 };
 
 /**
@@ -253,7 +253,7 @@ const blocksToBits = (blocks, pixlesPerBlock) => {
       // in that case output 0 if the median is in the lower value space, 1 otherwise
       // 如果 block > 中位数, 则输出 1
       // 为了避免生成全零或零占据大部分的哈希值, 若中位数在较低值空间中，则输出0，否则输出1
-      if (v > m || (Math.abs(v - m) < 1 && m > halfBlockValue)) {
+      if (v >= m || (Math.abs(v - m) < 1 && m > halfBlockValue)) {
         blocks[j] = 1;
       } else {
         blocks[j] = 0;
@@ -284,6 +284,65 @@ const bitsToHexHash = (bits) => {
   return hexadecimal;
 };
 
+const colorVector = async (imgPath) => {
+  let pixels = await retrivePixels(imgPath);
+  const width = pixels.shape[0];
+  const height = pixels.shape[1];
+  let vectors = Array(64).fill(0);
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      const r = getPartition(pixels.get(x, y, 0));
+      const g = getPartition(pixels.get(x, y, 1));
+      const b = getPartition(pixels.get(x, y, 2));
+      const index =
+        r * Math.pow(4, 2) + g * Math.pow(4, 1) + b * Math.pow(4, 0);
+      vectors[index] += 1;
+    }
+  }
+  // value to frequency
+  /* for (let i = 0; i < vectors.length; i++) {
+    vectors[i] /= width * height;
+  } */
+
+  console.log(vectors);
+  return vectors;
+};
+
+const getPartition = (value) => {
+  if (value >= 0 && value <= 63) {
+    return 0;
+  } else if (value >= 64 && value <= 127) {
+    return 1;
+  } else if (value >= 128 && value <= 191) {
+    return 2;
+  } else if (value >= 192 && value <= 255) {
+    return 3;
+  }
+};
+
+const colorSimiliarity = async (firstImg, secondImg) => {
+  let vector1 = await colorVector(firstImg);
+  let vector2 = await colorVector(secondImg);
+  // calculate cosine similiarity of two vectors
+  let dividend = 0,
+    divisor = 1;
+  for (let i = 0; i < vector1.length; i++) {
+    dividend += vector1[i] * vector2[i];
+  }
+  let absVector1 = 0,
+    absVector2 = 0;
+  for (let i = 0; i < vector1.length; i++) {
+    absVector1 += Math.pow(vector1[i], 2);
+    absVector2 += Math.pow(vector2[i], 2);
+  }
+  absVector1 = Math.pow(absVector1, 0.5);
+  absVector2 = Math.pow(absVector2, 0.5);
+  divisor = absVector1 * absVector2;
+  similarity = dividend / divisor;
+  console.log(similarity);
+  return similarity;
+};
+
 /**
  * init 2d array
  * 初始化 2d 数组
@@ -291,7 +350,7 @@ const bitsToHexHash = (bits) => {
  * @param {number} rows
  * @returns {Array}
  */
-const Create2DArray = (rows) => {
+const create2DArray = (rows) => {
   var arr = [];
   for (var i = 0; i < rows; i++) {
     arr[i] = [];
@@ -332,7 +391,7 @@ const convertGrayscale = async (imgPath) => {
   const col = pixels.shape[1];
   // console.log(row, col);
   // new array to store image info
-  let arr = Create2DArray(row);
+  let arr = create2DArray(row);
   for (let i = 0; i < row; i++) {
     for (let j = 0; j < col; j++) {
       const r = pixels.get(i, j, 0);
@@ -352,7 +411,8 @@ const convertGrayscale = async (imgPath) => {
 };
 
 exports.convertGrayscale = convertGrayscale;
-exports.hamming_distance = hamming_distance;
+exports.hammingDistance = hammingDistance;
+exports.colorSimiliarity = colorSimiliarity;
 exports.BHash = BHash;
 exports.DHash = DHash;
 exports.AHash = AHash;
