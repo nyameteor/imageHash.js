@@ -15,8 +15,8 @@ Implemented algorithms:
 const { BHash, AHash, DHash, MHash, hamming_distance } = require("./imageHash");
 const HashMethod = require("./hashMethod");
 
-firstImg = "path/to/first-image";
-secondImg = "path/to/second-image";
+const firstImg = "path/to/first-image";
+const secondImg = "path/to/second-image";
 
 // Difference Hash
 DHash(firstImg);

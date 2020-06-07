@@ -33,7 +33,6 @@ const resizeImage = async (imgPath, length, width) => {
  */
 const hamming_distance = async (firstImg, secondImg, hashMethod) => {
   const calculate_distance = (hash1, hash2) => {
-    console.log(hash1, hash2);
     const difference =
       parseInt(hash1, 16).toString(10) ^ parseInt(hash2, 16).toString(10);
     binary = parseInt(difference, 10).toString(2);
@@ -44,36 +43,33 @@ const hamming_distance = async (firstImg, secondImg, hashMethod) => {
         distance += 1;
       }
     }
-    console.log(distance);
+    console.log("hamming distance = ", distance);
   };
+  // default method = DHash
+  let method = DHash;
   switch (hashMethod) {
     case HashMethod.AHASH: {
-      const hash1 = await AHash(firstImg);
-      const hash2 = await AHash(secondImg);
-      calculate_distance(hash1, hash2);
+      method = AHash;
       break;
     }
     case HashMethod.DHASH: {
-      const hash1 = await DHash(firstImg);
-      const hash2 = await DHash(secondImg);
-      calculate_distance(hash1, hash2);
+      method = DHash;
       break;
     }
     case HashMethod.MHASH: {
-      const hash1 = await MHash(firstImg);
-      const hash2 = await MHash(secondImg);
-      calculate_distance(hash1, hash2);
+      method = MHash;
       break;
     }
     case HashMethod.BHASH: {
-      const hash1 = await BHash(firstImg);
-      const hash2 = await BHash(secondImg);
-      calculate_distance(hash1, hash2);
+      method = BHash;
       break;
     }
     default:
-      console.log(`Sorry, we are out of ${expr}.`);
+      console.log(`Sorry, we are out of ${expr}, use DHash as default`);
   }
+  const hash1 = await method(firstImg);
+  const hash2 = await method(secondImg);
+  calculate_distance(hash1, hash2);
 };
 
 /**
@@ -99,7 +95,7 @@ const DHash = async (imgPath) => {
     }
   }
   hexadecimal = parseInt(difference, 2).toString(16);
-  console.log(hexadecimal);
+  console.log("difference hash = ", hexadecimal);
   return hexadecimal;
 };
 
@@ -134,7 +130,7 @@ const AHash = async (imgPath) => {
     }
   }
   hexadecimal = parseInt(difference, 2).toString(16);
-  console.log(average, hexadecimal);
+  console.log("average hash = ", hexadecimal);
   return hexadecimal;
 };
 
@@ -162,7 +158,7 @@ const MHash = async (imgPath) => {
     }
   }
   hexadecimal = parseInt(difference, 2).toString(16);
-  console.log(median, hexadecimal);
+  console.log("median hash = ", hexadecimal);
   return hexadecimal;
 };
 
@@ -289,7 +285,7 @@ const bitsToHexHash = (bits) => {
     }
   }
   hexadecimal = parseInt(bitsStr, 2).toString(16);
-  console.log(hexadecimal);
+  console.log("block hash = ", hexadecimal);
   return hexadecimal;
 };
 
