@@ -23,8 +23,8 @@ then make a new javascript file and write these for test
 const { BHash, AHash, DHash, MHash, hamming_distance } = require("./imageHash");
 const HashMethod = require("./hashMethod");
 
-firstImg = "path/to/first-image";
-secondImg = "path/to/second-image";
+const firstImg = "path/to/first-image";
+const secondImg = "path/to/second-image";
 
 // Difference Hash
 DHash(firstImg);
@@ -39,6 +39,8 @@ MHash(firstImg);
 BHash(firstImg);
 
 // Hamming Distance between two images with Block Hash
+// Hamming Distance < 5 means very similar
+// Hamming Distance > 10 means not similar
 hamming_distance(firstImg, secondImg, HashMethod.BHASH);
 ```
 
