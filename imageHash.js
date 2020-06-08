@@ -32,13 +32,14 @@ const hammingDistance = async (firstImg, secondImg, hashMethod) => {
       parseInt(hash1, 16).toString(10) ^ parseInt(hash2, 16).toString(10);
     binary = parseInt(difference, 10).toString(2);
     // console.log(difference);
-    distance = 0;
+    let distance = 0;
     for (let i = 0; i < binary.length; i++) {
       if (binary[i] == "1") {
         distance += 1;
       }
     }
     console.log("hamming distance = ", distance);
+    return distance;
   };
   // default method = DHash
   let method = DHash;
@@ -64,7 +65,8 @@ const hammingDistance = async (firstImg, secondImg, hashMethod) => {
   }
   const hash1 = await method(firstImg);
   const hash2 = await method(secondImg);
-  calculateDistance(hash1, hash2);
+  const distance = calculateDistance(hash1, hash2);
+  return distance;
 };
 
 /**
@@ -423,6 +425,7 @@ const convertGrayscale = async (imgPath) => {
        * (principle: the human eye has the highest sensitivity to green and the lowest sensitivity to blue)
        * 加权平均法对图片进行灰度处理
        * (原理: 人眼对绿色的敏感度最高，对蓝色的敏感度最低)
+       * 使用 PAL 和 NTSC 使用的 rec601 亮度（Y）分量计算标准
        */
       arr[i][j] = Math.round(0.299 * r + 0.578 * g + 0.114 * b);
     }

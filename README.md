@@ -10,6 +10,15 @@ picture similarity comparison implemented by javascript
 - Median Hash
 - Color Histogram Similarity
 
+## Dependencies
+
+```json
+"dependencies": {
+    "get-pixels": "^3.3.2",
+    "sharp": "^0.25.3"
+}
+```
+
 ## Usage
 
 clone this repositor
@@ -17,6 +26,7 @@ clone this repositor
 ```bash
 git clone https://github.com/AbyssLink/image-hash-js.git
 cd image-hash-js
+npm install
 ```
 
 then make a new javascript file and write these for test
@@ -50,6 +60,10 @@ hamming_distance(firstImg, secondImg, HashMethod.BHASH);
 colorSimiliarity(firstImg, secondImg);
 ```
 
+## Performance Test
+
+- TODO (test end, translating)
+
 ## References
 
 https://ieeexplore.ieee.org/document/4041692
@@ -57,10 +71,3 @@ https://ieeexplore.ieee.org/document/4041692
 https://pdfs.semanticscholar.org/b59b/14d3a0d7047a63cbbcfc25582fb915f60664.pdf
 
 https://content-blockchain.org/research/testing-different-image-hash-functions/
-
-```json
-"dependencies": {
-    "get-pixels": "^3.3.2",
-    "sharp": "^0.25.3"
-}
-```
