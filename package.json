@@ -1,8 +1,8 @@
 {
-  "name": "image-hash",
+  "name": "image-hash-js",
   "version": "1.0.0",
-  "description": "Image hashing with javascript",
-  "main": "dhash.js",
+  "description": "A simple image hashing library written in JavaScript.",
+  "main": "imageHash.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
