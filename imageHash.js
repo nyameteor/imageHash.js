@@ -38,7 +38,7 @@ const hammingDistance = async (firstImg, secondImg, hashMethod) => {
         distance += 1;
       }
     }
-    console.log("hamming distance = ", distance);
+    // console.log("hamming distance = ", distance);
     return distance;
   };
   // default method = DHash
@@ -92,7 +92,7 @@ const DHash = async (imgPath) => {
     }
   }
   hexadecimal = parseInt(difference, 2).toString(16);
-  console.log("difference hash = ", hexadecimal);
+  // console.log("difference hash = ", hexadecimal);
   return hexadecimal;
 };
 
@@ -127,7 +127,7 @@ const AHash = async (imgPath) => {
     }
   }
   hexadecimal = parseInt(difference, 2).toString(16);
-  console.log("average hash = ", hexadecimal);
+  // console.log("average hash = ", hexadecimal);
   return hexadecimal;
 };
 
@@ -155,7 +155,7 @@ const MHash = async (imgPath) => {
     }
   }
   hexadecimal = parseInt(difference, 2).toString(16);
-  console.log("median hash = ", hexadecimal);
+  // console.log("median hash = ", hexadecimal);
   return hexadecimal;
 };
 
@@ -282,7 +282,7 @@ const bitsToHexHash = (bits) => {
     }
   }
   hexadecimal = parseInt(bitsStr, 2).toString(16);
-  console.log("block hash = ", hexadecimal);
+  // console.log("block hash = ", hexadecimal);
   return hexadecimal;
 };
 
@@ -309,7 +309,7 @@ const colorVector = async (imgPath) => {
     }
   }
 
-  console.log(vectors);
+  // console.log(vectors);
   return vectors;
 };
 
@@ -362,7 +362,7 @@ const colorSimiliarity = async (firstImg, secondImg) => {
   absVector2 = Math.pow(absVector2, 0.5);
   divisor = absVector1 * absVector2;
   similarity = dividend / divisor;
-  console.log(similarity);
+  // console.log(similarity);
   return similarity;
 };
 
