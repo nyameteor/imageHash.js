@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/nyameteor/imageHash.js#readme",
   "dependencies": {
-    "get-pixels": "^3.3.2",
-    "sharp": "^0.25.3"
+    "get-pixels": "^3.3.3",
+    "sharp": "^0.28.3"
   }
 }
